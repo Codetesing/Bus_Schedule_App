@@ -8,6 +8,8 @@ import retrofit2.http.Query
 interface login_api {
 
     @POST("login")
-    fun certify_user(@Query("id") id: String, @Query("pwd") pwd:String): Call<Boolean>
+    fun certify_user(@Query("id") id: String, @Query("pwd") pwd:String): Call<String>
 
+    @GET("join")
+    fun join_user(@Query("id") id: String, @Query("pwd") pwd:String): Call<String>
 }
