@@ -9,7 +9,7 @@ public class NodeInfo {
     private String gpslati; // 위도
     private String gpslong; // 경도
 
-    private int duration; // 다음 정류소까지 시간
+    private int duration=0; // 이번 정류소까지의 시간
 
     public NodeInfo(String nodenm, String nodeid, String gpslati, String gpslong) {
         this.nodenm = nodenm;

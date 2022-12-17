@@ -28,8 +28,31 @@ public class BusController {
         Nodes nodes = getAllNodes(citycode, routeid);
         Routes routes = getAllRoutes(citycode, routeid);
 
-        System.out.println( nodes.toString());
+        System.out.println(nodes.toString());
         System.out.println(routes.toString());
+
+        int j = 0;
+        for(int i=1; i < nodes.getUp().size(); i++)
+        {
+            int time = nodes.getUp().get(i-1).getDuration();
+            // 버스의 다음 정류소가 i일 때
+            if(Objects.equals(routes.getRoutes().get(j).getNodeid(), nodes.getUp().get(i-1).getNodeid()))
+            {
+                System.out.println("nodenm: " + nodes.getUp().get(i).getNodenm() + " routenm: " + routes.getRoutes().get(j).getRoutenm());
+
+                // 버스에서 정류소까지 걸리는 시간으로 초기화
+                time = getRoutesDuration("22", nodes.getUp().get(i).getNodeid(), routes.getRoutes().get(j).getRouteid());
+                j++;
+            }
+            else {
+                // 해당 정류소에 버스가 없으면 이동시간 더하기
+                time += NaviController.navigation(nodes.getUp().get(i-1).getGpslong() + "," + nodes.getUp().get(i-1).getGpslati(), nodes.getUp().get(i).getGpslong() + "," + nodes.getUp().get(i).getGpslati(), "trafast");
+            }
+
+            // 다음 정류소까지 걸리는 시간 설정
+            nodes.getUp().get(i).setDuration(time);
+            System.out.println("time: " + time);
+        }
         System.out.println("\n</getAllNodes>");
     }
     // 노선이 경유하는 모든 정류소 정보
@@ -90,7 +113,7 @@ public class BusController {
     // 정류소별 특정노선버스 도착예정정보
     // param: 도시코드 정류소ID, 버스ID
     @GetMapping("/getRoutesDuration")
-    public void getRoutesDuration(@RequestParam String citycode, String nodeid, String routeid) throws IOException {
+    public int getRoutesDuration(@RequestParam String citycode, String nodeid, String routeid) throws IOException, JSONException {
         System.out.println("\n<getRoutesDuration>");
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/ArvlInfoInqireService/getSttnAcctoSpcifyRouteBusArvlPrearngeInfoList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Gva8D7gUzmoTHh8HdWjojVwEHL9r9WbBSJob74JTiIb5qUlt04y5lz%2FC4rDBV5dsazMMUxl79%2FHKf2M2Bybffg%3D%3D"); /*Service Key*/
@@ -114,8 +137,22 @@ public class BusController {
         }
         rd.close();
         conn.disconnect();
-        System.out.println(sb.toString());
+        //System.out.println(sb.toString());
+        JSONObject jObjects = new JSONObject(sb.toString());
+        JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
+        int time = 0;
+
+        if(items.getInt("totalCount") > 1)
+        {
+            time = items.getJSONObject("items").getJSONArray("item").getJSONObject(0).getInt("arrtime");
+        } else {
+            time = items.getJSONObject("items").getJSONObject("item").getInt("arrtime");
+        }
+
+
+        System.out.println("버스에서 가장 가까운 정류소까지 시간: " + time);
         System.out.println("\n</getRoutesDuration>");
+        return time;
     }
 
     // 노선별 버스 위치 목록 조회
@@ -155,7 +192,7 @@ public class BusController {
         if(items.getInt("totalCount") > 1)
         {
             JSONArray item = items.getJSONObject("items").getJSONArray("item");
-            for(int i=0; i< items.length(); i++)
+            for(int i=0; i< item.length(); i++)
             {
                 JSONObject obj = item.getJSONObject(i);
                 routeInfo = new RouteInfo(obj.getString("routenm"), routeid, obj.getString("nodeid"), obj.getString("nodenm"), obj.getString("gpslati"), obj.getString("gpslong"));
@@ -303,14 +340,13 @@ public class BusController {
         {
             item = items.getJSONObject("items").getJSONArray("item").getJSONObject(0).getString("nodeid");
 
-
             // 비슷한 이름이 여러개일때 모두 출력...
             JSONArray Array = items.getJSONObject("items").getJSONArray("item");
-            for(int i=0; i< item.length(); i++)
+            for(int i=0; i< Array.length(); i++)
             {
                 JSONObject obj = Array.getJSONObject(i);
-                nodenms.add(obj.getString("nodenm"));
-                System.out.println(nodenms.get(i));
+                //nodenms.add(obj.getString("nodenm"));
+                System.out.println(obj.getString("nodenm"));
             }
         } else {
             item = items.getJSONObject("items").getJSONObject("item").getString("nodeid");
@@ -357,15 +393,13 @@ public class BusController {
         if(items.getInt("totalCount") > 1)
         {
             item = items.getJSONObject("items").getJSONArray("item").getJSONObject(0).getString("routeid");
-
-
             // 비슷한 이름이 여러개일때 모두 출력...
             JSONArray Array = items.getJSONObject("items").getJSONArray("item");
-            for(int i=0; i< item.length(); i++)
+            for(int i=0; i< Array.length(); i++)
             {
                 JSONObject obj = Array.getJSONObject(i);
-                nodenms.add(obj.getString("routeid"));
-                System.out.println(nodenms.get(i));
+                //nodenms.add(obj.getString("routeno"));
+                System.out.println(obj.getString("routeno"));
             }
         } else {
             item = items.getJSONObject("items").getJSONObject("item").getString("routeid");

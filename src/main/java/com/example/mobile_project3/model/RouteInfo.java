@@ -7,6 +7,7 @@ public class RouteInfo {
     private String nodenm;  // 정류소이름
     private String gpslati; // 위도
     private String gpslong; // 경도
+    private int duration=0; // 다음 정류소까지 걸릴 시간
 
     public RouteInfo(String routenm, String routeid, String nodeid, String nodenm, String gpslati, String gpslong) {
         this.routenm = routenm;

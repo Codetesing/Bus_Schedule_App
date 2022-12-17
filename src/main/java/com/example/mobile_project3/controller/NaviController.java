@@ -17,9 +17,8 @@ import java.net.URLEncoder;
 @RestController
 public class NaviController {
 
-
     @GetMapping("navigation")
-    public Integer navigation(@RequestParam String start, String goal, String option) throws IOException, JSONException {
+    public static Integer navigation(@RequestParam String start, String goal, String option) throws IOException, JSONException {
         String clientId = "z17ahs6qnw";
         String clientSecret = "9ttttQgaR6XracSDpaKFdRSxweFTue2kb6QIfmAb";
 
@@ -29,8 +28,6 @@ public class NaviController {
         urlBuilder.append("?" + URLEncoder.encode("start","UTF-8") + "=" + URLEncoder.encode(start, "UTF-8")); /*출발지 좌표*/
         urlBuilder.append("&" + URLEncoder.encode("goal","UTF-8") + "=" + URLEncoder.encode(goal, "UTF-8")); /*도착지 좌표*/
         urlBuilder.append("&" + URLEncoder.encode("option","UTF-8") + "=" + URLEncoder.encode(option, "UTF-8")); /*옵션*/
-
-
 
         URL url = new URL(urlBuilder.toString());
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -59,7 +56,7 @@ public class NaviController {
         }
         rd.close();
         con.disconnect();
-        System.out.println(sb.toString());
+        // System.out.println(sb.toString());
 
         JSONObject jObjects = new JSONObject(sb.toString());
         int time = 0;
@@ -79,7 +76,7 @@ public class NaviController {
 //        }
 
 
-        System.out.println(time);
+        System.out.println("node to node: " + time);
         return time;
 
 
