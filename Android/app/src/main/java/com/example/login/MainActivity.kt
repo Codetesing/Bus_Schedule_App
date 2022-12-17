@@ -32,7 +32,10 @@ class MainActivity : AppCompatActivity() {
                         // 메인 화면으로 이동
                         if(user != "fail") {
                             //Log.d("Login Success", "user name : $user")
-                            Toast.makeText(this@MainActivity, "main_page", Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(this@MainActivity, "main_page", Toast.LENGTH_SHORT).show()
+
+                            val intent = Intent(this@MainActivity, BusStationActivity::class.java)
+                            startActivity(intent);
                         }
 
                         // 로그인 실패

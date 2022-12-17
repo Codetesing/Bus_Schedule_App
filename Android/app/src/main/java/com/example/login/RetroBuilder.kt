@@ -14,7 +14,7 @@ object RetroBuilder {
             instance = Retrofit.Builder()
                 // localhost:8080 (by AVD)
                 .baseUrl("http://10.0.2.2:8080/")
-                //.addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build()
         }

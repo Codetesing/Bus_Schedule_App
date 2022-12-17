@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONArray;
