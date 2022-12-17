@@ -150,7 +150,7 @@ public class BusController {
         }
 
 
-        System.out.println("버스에서 가장 가까운 정류소까지 시간: " + time);
+        System.out.println("버스에서 가장 가까운 정류소까지 시간: " + time * 1000);
         System.out.println("\n</getRoutesDuration>");
         return time;
     }
