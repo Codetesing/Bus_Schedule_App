@@ -164,8 +164,6 @@ public class BusController {
         } else {
             time = items.getJSONObject("items").getJSONObject("item").getInt("arrtime");
         }
-
-
         System.out.println("버스에서 가장 가까운 정류소까지 시간: " + time * 1000);
         System.out.println("\n</getRoutesDuration>");
         return time;
@@ -226,10 +224,10 @@ public class BusController {
 
     // 정류소별 도착예정정보 목록 조회
     @GetMapping("/maybe")
-    public String maybe(@RequestParam String citycode, String nodenm) throws IOException, JSONException {
+    public Routes maybe(@RequestParam String citycode, String nodenm) throws IOException, JSONException {
 
         System.out.println("\n<maybe>");
-        String nodeID = getNodeID(citycode, nodenm);
+        String nodeID = getNodeID(citycode, nodenm).get(0);
 
         System.out.println("\nnodenm: " + nodenm + " nodeID: " + nodeID);
 
@@ -258,8 +256,31 @@ public class BusController {
         rd.close();
         conn.disconnect();
 
+        JSONObject jObjects = new JSONObject(sb.toString());
+        JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
+
+        RouteInfo routeInfo;
+        List<RouteInfo> routes = new ArrayList<>();
+
+        if(items.getInt("totalCount") > 1)
+        {
+            JSONArray item = items.getJSONObject("items").getJSONArray("item");
+            for(int i=0; i< item.length(); i++)
+            {
+                JSONObject obj = item.getJSONObject(i);
+                routeInfo = new RouteInfo(obj.getString("routeno"), "", obj.getString("nodeid"), obj.getString("nodenm"), "", "", obj.getInt("arrtime"));
+                routes.add(routeInfo);
+            }
+        } else {
+            JSONObject obj = items.getJSONObject("items").getJSONObject("item");
+            routeInfo = new RouteInfo(obj.getString("routeno"), "", obj.getString("nodeid"), obj.getString("nodenm"), "", "", obj.getInt("arrtime"));
+            routes.add(routeInfo);
+        }
+
+        System.out.println(routes.toString());
         System.out.println("\n</maybe>");
-        return (sb.toString());
+
+        return new Routes(routes);
     }
 
     // get routeList passing through each nodes      param: 도시코드 정류소명    return: Map<버스번호 : 버스ID>
@@ -267,7 +288,7 @@ public class BusController {
     public BusID getRouteThrghNodeNm(@RequestParam String citycode, String nodenm) throws IOException, JSONException {
 
         System.out.println("\n<getRouteThrghNodeNm>");
-        String nodeID = getNodeID(citycode, nodenm);
+        String nodeID = getNodeID(citycode, nodenm).get(0);
 
         System.out.println("\nnodenm: " + nodenm + " nodeID: " + nodeID);
 
@@ -321,7 +342,7 @@ public class BusController {
 
     // get nodeID       param: 도시코드, 정류소명       return: Map< 정류소이름 : {위도, 경도, 정류소ID} >
     @GetMapping("/getNodeID")
-    public String getNodeID(@RequestParam String citycode, String nodenm) throws IOException, JSONException {
+    public List<String> getNodeID(@RequestParam String citycode, String nodenm) throws IOException, JSONException {
         System.out.println("\n<getNodeID>");
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getSttnNoList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=DVNwYfz2bCeyEZsFkEwESH6ZvoZpDUhj%2FJ5em%2FruYkH7Fe%2FSmf48qyGZRbH2uKDbCP8M1NoY8SnBQzPJlQfdbA%3D%3D"); /*Service Key*/
@@ -360,15 +381,16 @@ public class BusController {
             for(int i=0; i< Array.length(); i++)
             {
                 JSONObject obj = Array.getJSONObject(i);
-                //nodenms.add(obj.getString("nodenm"));
+                nodenms.add(obj.getString("nodenm"));
                 System.out.println(obj.getString("nodenm"));
             }
         } else {
             item = items.getJSONObject("items").getJSONObject("item").getString("nodeid");
+            nodenms.add(item);
         }
 
         System.out.println("\n</getNodeID>");
-        return item;
+        return nodenms;
     }
 
     // get routeID        param: 도시코드, 노선번호       return: 노선ID
@@ -401,7 +423,6 @@ public class BusController {
         System.out.println(sb.toString());
         JSONObject jObjects = new JSONObject(sb.toString());
         JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
-
 
         String item;
         List<String> nodenms = new ArrayList<>();

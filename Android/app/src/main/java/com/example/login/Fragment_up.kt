@@ -1,5 +1,6 @@
 package com.example.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -36,6 +37,16 @@ class Fragment_up : Fragment() {
         var list: List<Up> = requireActivity().intent!!.extras!!.get("list") as List<Up>
         myRecyclerViewAdapter2.submitList(list!!)
 
+        myRecyclerViewAdapter2.setItemClickListener(object: busAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                val intent = Intent(context, NodeTimeActivity::class.java)
+
+                intent.putExtra("nm", list.get(position).nodenm)
+
+                startActivity(intent)
+            }
+        })
+
         binding.recyclerView.apply {
             this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = myRecyclerViewAdapter2
@@ -44,5 +55,4 @@ class Fragment_up : Fragment() {
 
         return binding.root
     }
-
 }

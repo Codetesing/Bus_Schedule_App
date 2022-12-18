@@ -7,7 +7,7 @@ public class RouteInfo {
     private String nodenm;  // 정류소이름
     private String gpslati; // 위도
     private String gpslong; // 경도
-    private int duration=0; // 다음 정류소까지 걸릴 시간
+    private int duration; // 다음 정류소까지 걸릴 시간
 
     public RouteInfo(String routenm, String routeid, String nodeid, String nodenm, String gpslati, String gpslong) {
         this.routenm = routenm;
@@ -16,6 +16,17 @@ public class RouteInfo {
         this.nodenm = nodenm;
         this.gpslati = gpslati;
         this.gpslong = gpslong;
+        this.duration = 0;
+    }
+
+    public RouteInfo(String routenm, String routeid, String nodeid, String nodenm, String gpslati, String gpslong, int duration) {
+        this.routenm = routenm;
+        this.routeid = routeid;
+        this.nodeid = nodeid;
+        this.nodenm = nodenm;
+        this.gpslati = gpslati;
+        this.gpslong = gpslong;
+        this.duration = duration;
     }
 
     public String getRoutenm() {
@@ -66,6 +77,14 @@ public class RouteInfo {
         this.gpslong = gpslong;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     @Override
     public String toString() {
         return "routeInfo{" +
@@ -75,6 +94,7 @@ public class RouteInfo {
                 ", nodenm='" + nodenm + '\'' +
                 ", gpslati='" + gpslati + '\'' +
                 ", gpslong='" + gpslong + '\'' +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 }

@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity() {
                             //Log.d("Login Success", "user name : $user")
                             //Toast.makeText(this@MainActivity, "main_page", Toast.LENGTH_SHORT).show()
 
-                            val intent = Intent(this@MainActivity, BusStationActivity::class.java)
+                            //val intent = Intent(this@MainActivity, BusStationActivity::class.java)
+                            var intent = Intent(this@MainActivity, BusRouteActivity::class.java)
                             startActivity(intent);
                         }
 

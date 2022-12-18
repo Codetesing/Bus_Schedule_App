@@ -35,7 +35,7 @@ data class Up(
     @field:Json(name = "nodeid")
     val nodeid: String?,
     @field:Json(name = "nodenm")
-    val nodenm: String?,
+    var nodenm: String?,
     @field:Json(name = "bus")
     val bus: Boolean?
 ) : Serializable

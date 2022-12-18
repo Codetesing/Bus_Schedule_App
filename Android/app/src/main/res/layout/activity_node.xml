@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+
+    >
+
+
+    <LinearLayout
+        android:id="@+id/LinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:hint="도시"
+            android:text="대구"
+            android:paddingLeft="50dp"
+            android:paddingTop="15dp"
+            android:fontFamily="@font/imcresoojin" />
+
+        <EditText
+            android:id="@+id/route"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:hint="정류소 이름"
+            android:paddingLeft="30dp"
+            android:fontFamily="@font/imcresoojin"
+            android:inputType="text"
+            android:maxLines="1"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="135dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:text="search"
+            android:textSize="12sp"
+            android:onClick="hideKeyboard"
+            android:fontFamily="@font/imcresoojin"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bus_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/imcresoojin"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/LinearLayout" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/bus_name"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/bus_name"
+            tools:listitem="@layout/bus_item"
+            android:layout_marginBottom="200dp"/>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

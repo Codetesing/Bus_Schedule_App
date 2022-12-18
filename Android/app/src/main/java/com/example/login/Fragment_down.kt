@@ -1,5 +1,6 @@
 package com.example.login
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -40,6 +41,16 @@ class Fragment_down : Fragment() {
             this.adapter = myRecyclerViewAdapter2
             this.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+
+        myRecyclerViewAdapter2.setItemClickListener(object: busAdapter.OnItemClickListener {
+            override fun onClick(v: View, position: Int) {
+                val intent = Intent(context, NodeTimeActivity::class.java)
+
+                intent.putExtra("nm", list.get(position).nodenm)
+
+                startActivity(intent)
+            }
+        })
 
         return binding.root
     }

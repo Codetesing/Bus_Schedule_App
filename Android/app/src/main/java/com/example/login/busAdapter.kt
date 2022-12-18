@@ -20,7 +20,19 @@ class busAdapter : ListAdapter<Up, busAdapter.BusViewHolder>(DiffCallback) {
 
     override fun onBindViewHolder(holder: BusViewHolder, position: Int) {
         holder.bind(getItem(position))
+
+        holder.itemView.setOnClickListener {
+            itemClickListener.onClick(it, position)
+        }
     }
+
+    interface OnItemClickListener {
+        fun onClick(v: View, position: Int)
+    }
+    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
+        this.itemClickListener = onItemClickListener
+    }
+    private lateinit var itemClickListener : OnItemClickListener
 
     class BusViewHolder(private val binding: BusItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -37,6 +49,7 @@ class busAdapter : ListAdapter<Up, busAdapter.BusViewHolder>(DiffCallback) {
                     buses2.visibility = View.INVISIBLE
                 }
             }
+
         }
     }
 
