@@ -92,12 +92,22 @@ public class BusController {
         List<NodeInfo> up = new ArrayList<>();
         List<NodeInfo> down = new ArrayList<>();
 
+        Routes r = getAllRoutes(citycode, routeid);
+        /////////////////////////////////////
+
+        int cnt = 0;
         for(int i=0; i< items.length(); i++)
         {
             JSONObject obj = items.getJSONObject(i);
             nodeInfo = new NodeInfo(obj.getString("nodenm"), obj.getString("nodeid"), obj.getString("gpslati"), obj.getString("gpslong"));
             int code = obj.getInt("updowncd");
 
+            for(RouteInfo tr : r.getRoutes()) {
+                if (nodeInfo.getNodeid().equals(tr.getNodeid())) {
+                    nodeInfo.setbus(true);
+                    cnt++;
+                }
+            }
             // 상행
             if(code == 0)
             {
@@ -110,6 +120,7 @@ public class BusController {
                 down.add(nodeInfo);
             }
         }
+        System.out.println(cnt);
 
         System.out.println("</getAllNodes>");
         return new Nodes(up, down);

@@ -34,9 +34,11 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/buses2"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_baseline_directions_bus_24"/>
+        android:src="@drawable/ic_baseline_directions_bus_24"
+        android:visibility="invisible"/>
 
 </LinearLayout>

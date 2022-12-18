@@ -8,6 +8,8 @@ public class NodeInfo {
 
     private int duration=0; // 이번 정류소까지의 시간
 
+    private boolean cur_bus = false;
+
     public NodeInfo(String nodenm, String nodeid, String gpslati, String gpslong) {
         this.nodenm = nodenm;
         this.nodeid = nodeid;
@@ -53,6 +55,10 @@ public class NodeInfo {
     public void setGpslong(String gpslong) {
         this.gpslong = gpslong;
     }
+
+    public void setbus(boolean t) { this.cur_bus = t;}
+
+    public boolean getbus() { return cur_bus; }
 
     @Override
     public String toString() {

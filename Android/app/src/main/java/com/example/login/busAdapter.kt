@@ -1,6 +1,8 @@
 package com.example.login
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -27,6 +29,13 @@ class busAdapter : ListAdapter<Up, busAdapter.BusViewHolder>(DiffCallback) {
             with(binding) {
                 nodenm.text = item.nodenm
                 nodeid.text = item.nodeid
+
+                if(item.bus == true) {
+                    buses2.visibility = View.VISIBLE
+                }
+                else {
+                    buses2.visibility = View.INVISIBLE
+                }
             }
         }
     }

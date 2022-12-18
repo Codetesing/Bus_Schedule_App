@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.login.databinding.ActivityBusStationBinding
+import com.example.login.databinding.FragmentUpBinding
 import com.google.android.material.tabs.TabLayout
 import retrofit2.Call
 import retrofit2.Callback
