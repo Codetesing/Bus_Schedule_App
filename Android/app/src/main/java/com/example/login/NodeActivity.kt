@@ -47,7 +47,7 @@ class NodeActivity : AppCompatActivity() {
         val retrofit = RetroBuilder.getInstnace()
         val service = retrofit.create(busService::class.java)
 
-        Log.d("test", route)
+        //Log.d("test", route)
 
         service.getNodeID(22, route)
             .enqueue(object: Callback<List<String>> {

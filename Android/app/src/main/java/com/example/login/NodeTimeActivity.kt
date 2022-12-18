@@ -46,7 +46,7 @@ class NodeTimeActivity : AppCompatActivity() {
         val retrofit = RetroBuilder.getInstnace()
         val service = retrofit.create(busService::class.java)
 
-        Log.d("test", route)
+        //Log.d("test", route)
 
         service.getBusTime(22, route)
             .enqueue(object: Callback<BusTimeResponse> {
