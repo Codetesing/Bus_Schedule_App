@@ -5,8 +5,8 @@ Mobile App Programming 1
 
 ---------
 
-### Setting
----------
+## Setting
+
 ### Server
 
 Spring Boot : 2.7.5
@@ -24,3 +24,5 @@ Android Min SDK : 28
 ### DataBase
 
 MySQL : 8.0.26
+
+## ---------
