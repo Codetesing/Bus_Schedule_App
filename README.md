@@ -24,5 +24,3 @@ Android Min SDK : 28
 ### DataBase
 
 MySQL : 8.0.26
-
-## ---------
