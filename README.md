@@ -5,8 +5,8 @@ Mobile App Programming 1
 
 ---------
 
-### Setting
----
+Setting
+
 Server
 ---------
 Spring Boot : 2.7.5
