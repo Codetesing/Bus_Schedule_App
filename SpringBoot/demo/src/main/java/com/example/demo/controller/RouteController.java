@@ -6,6 +6,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+@RestController
 public class RouteController {
     // 1
     // 노선번호를 입력하면 해당하는 노선의 id 반환
@@ -200,7 +202,7 @@ public class RouteController {
     // 정류소별 특정노선버스 도착예정정보
     // param: 도시코드 정류소ID, 버스ID              return: 1/1000초 or -1(값이 없을 때)
     @GetMapping("/getRoutesDuration")
-    public int getRoutesDuration(@RequestParam String citycode, String nodeid, String routeid) throws IOException, JSONException {
+    public JSONObject getRoutesDuration(@RequestParam String citycode, String nodeid, String routeid) throws IOException, JSONException {
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/ArvlInfoInqireService/getSttnAcctoSpcifyRouteBusArvlPrearngeInfoList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Gva8D7gUzmoTHh8HdWjojVwEHL9r9WbBSJob74JTiIb5qUlt04y5lz%2FC4rDBV5dsazMMUxl79%2FHKf2M2Bybffg%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
@@ -226,21 +228,49 @@ public class RouteController {
         //System.out.println(sb.toString());
         JSONObject jObjects = new JSONObject(sb.toString());
         JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
-        int time = 0;
+        JSONObject bus = null;
 
         // 일치하는 값이 없음(-1)
         if (items.getInt("totalCount") == 0)
         {
-            return -1;
+            return null;
         }
         if(items.getInt("totalCount") > 1)
         {
-            time = items.getJSONObject("items").getJSONArray("item").getJSONObject(0).getInt("arrtime");
+            bus = items.getJSONObject("items").getJSONArray("item").getJSONObject(0);
+            for(int i = 1; i < items.getInt("totalCount"); i++)
+            {
+                if(bus.getInt("arrprevstationcnt") > items.getJSONObject("items").getJSONArray("item").getJSONObject(i).getInt("arrprevstationcnt"))
+                    bus = items.getJSONObject("items").getJSONArray("item").getJSONObject(i);
+            }
         } else {
-            time = items.getJSONObject("items").getJSONObject("item").getInt("arrtime");
+            bus = items.getJSONObject("items").getJSONObject("item");
         }
-        //System.out.println("버스에서 가장 가까운 정류소까지 시간: " + time * 1000);
-        return time*1000;
+
+        return bus;
+    }
+
+    // 정류소에 도착하는 버스 네비게이션으로 계산
+    // param: citycode, nodeid, routeid     return: 도착예정시간(1/1000초)
+    @GetMapping("/duration")
+    public int duration(@RequestParam String citycode, String nodeid, String routeid) throws JSONException, IOException {
+        List<NodeInfo> List = getAllNodes(citycode, routeid).getDown();
+        int index = List.indexOf(List.stream().filter(x->x.getNodeid().equals(nodeid)).findAny().get());
+        //System.out.println(index);
+        JSONObject dst = getRoutesDuration(citycode, nodeid, routeid);
+        int time = 0;
+        // 도착예정버스가 없음
+        if(dst == null)
+            return -1;
+        while(dst.getInt("arrprevstationcnt") > 1)
+        {
+            time += NaviController.navigation(List.get(index-1).getGpslong()+","+ List.get(index-1).getGpslati(), List.get(index).getGpslong()+","+ List.get(index).getGpslati(), "trafast");
+
+            index--;
+            dst = getRoutesDuration(citycode, List.get(index).getNodeid(), routeid);
+        }
+        time +=  getRoutesDuration(citycode, dst.getString("nodeid"), routeid).getInt("arrtime") * 1000;
+        return time;
     }
 
     public HttpURLConnection httpURLConnection(String geturl) throws IOException {
