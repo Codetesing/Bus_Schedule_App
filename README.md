@@ -6,7 +6,6 @@ Mobile App Programming 1
 ---
 
 ### Setting
------------
 
 Server
 ----------
