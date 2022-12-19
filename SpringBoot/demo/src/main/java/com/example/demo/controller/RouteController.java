@@ -143,7 +143,7 @@ public class RouteController {
 
     // 3
     // 노선별 버스 위치 목록 조회
-    // param: 도시코드 버스번호  return 버스정보와 버스가 위치하는 정류소정보
+    // param: 도시코드 버스번호  return 버스정보와 버스가 위치하는 정류소정보(없으면 null)
     @GetMapping("/getAllRoutes")
     public Routes getAllRoutes(@RequestParam String citycode, String routeid) throws IOException, JSONException {
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/BusLcInfoInqireService/getRouteAcctoBusLcList"); /*URL*/
@@ -173,7 +173,11 @@ public class RouteController {
 
         RouteInfo routeInfo;
         List<RouteInfo> routes = new ArrayList<>();
-
+        // 일치하는 값이 없음(null)
+        if (items.getInt("totalCount") == 0)
+        {
+            return null;
+        }
         if(items.getInt("totalCount") > 1)
         {
             JSONArray item = items.getJSONObject("items").getJSONArray("item");
@@ -194,7 +198,7 @@ public class RouteController {
 
     // 4
     // 정류소별 특정노선버스 도착예정정보
-    // param: 도시코드 정류소ID, 버스ID
+    // param: 도시코드 정류소ID, 버스ID              return: 1/1000초 or -1(값이 없을 때)
     @GetMapping("/getRoutesDuration")
     public int getRoutesDuration(@RequestParam String citycode, String nodeid, String routeid) throws IOException, JSONException {
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/ArvlInfoInqireService/getSttnAcctoSpcifyRouteBusArvlPrearngeInfoList"); /*URL*/
@@ -224,6 +228,11 @@ public class RouteController {
         JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
         int time = 0;
 
+        // 일치하는 값이 없음(-1)
+        if (items.getInt("totalCount") == 0)
+        {
+            return -1;
+        }
         if(items.getInt("totalCount") > 1)
         {
             time = items.getJSONObject("items").getJSONArray("item").getJSONObject(0).getInt("arrtime");
