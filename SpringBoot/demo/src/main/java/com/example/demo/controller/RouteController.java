@@ -25,7 +25,6 @@ public class RouteController {
     // param: citycode, 노선번호     return: IDList(노선번호, 노선id) or null(해당하는 번호가 없음)
     @GetMapping("/getrouteID")
     public String getRouteID(@RequestParam String citycode, String routenm) throws IOException, JSONException {
-        System.out.println("getrouteID");
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/BusRouteInfoInqireService/getRouteNoList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=DVNwYfz2bCeyEZsFkEwESH6ZvoZpDUhj%2FJ5em%2FruYkH7Fe%2FSmf48qyGZRbH2uKDbCP8M1NoY8SnBQzPJlQfdbA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
@@ -49,7 +48,7 @@ public class RouteController {
         }
         rd.close();
         conn.disconnect();
-        System.out.println(sb.toString());
+        //System.out.println(sb.toString());
         JSONObject jObjects = new JSONObject(sb.toString());
         JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
 
@@ -83,8 +82,6 @@ public class RouteController {
     // param: 도시코드 버스번호  return List<NodeInfo> 상행(정류소이름, 정류소ID, 위도, 경도), 하행(정류소이름, 정류소ID, 위도, 경도)
     @GetMapping("/getAllNodes")
     public Nodes getAllNodes(@RequestParam String citycode, String routeid) throws IOException, JSONException {
-        System.out.println("getAllNodes");
-        System.out.println(routeid);
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/BusRouteInfoInqireService/getRouteAcctoThrghSttnList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=DVNwYfz2bCeyEZsFkEwESH6ZvoZpDUhj%2FJ5em%2FruYkH7Fe%2FSmf48qyGZRbH2uKDbCP8M1NoY8SnBQzPJlQfdbA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
@@ -141,7 +138,7 @@ public class RouteController {
                 down.add(nodeInfo);
             }
         }
-        System.out.println(cnt);
+        //System.out.println(cnt);
 
         return new Nodes(up, down);
     }
@@ -151,8 +148,6 @@ public class RouteController {
     // param: 도시코드 버스번호  return 버스정보와 버스가 위치하는 정류소정보(없으면 null)
     @GetMapping("/getAllRoutes")
     public Routes getAllRoutes(@RequestParam String citycode, String routeid) throws IOException, JSONException {
-        System.out.println("getAllRoutes");
-        System.out.println(routeid);
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/BusLcInfoInqireService/getRouteAcctoBusLcList"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=Gva8D7gUzmoTHh8HdWjojVwEHL9r9WbBSJob74JTiIb5qUlt04y5lz%2FC4rDBV5dsazMMUxl79%2FHKf2M2Bybffg%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
@@ -283,7 +278,7 @@ public class RouteController {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
-        System.out.println("Response code: " + conn.getResponseCode());
+        //System.out.println("Response code: " + conn.getResponseCode());
         return conn;
     }
 }
