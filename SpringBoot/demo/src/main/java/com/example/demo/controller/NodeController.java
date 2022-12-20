@@ -197,6 +197,67 @@ public class NodeController {
         return new Routes(routes);
     }
 
+    // 4
+    // 근방 500m 이내 정류소 찾기
+    // param: 위도, 경도        return: 정류소이름, 정류소id, 정류소위도, 정류소경도
+    @GetMapping("/location")
+    public List<Map<String, String>> location(@RequestParam String gpslati, String gpslong) throws IOException, JSONException {
+        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList"); /*URL*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=Gva8D7gUzmoTHh8HdWjojVwEHL9r9WbBSJob74JTiIb5qUlt04y5lz%2FC4rDBV5dsazMMUxl79%2FHKf2M2Bybffg%3D%3D"); /*Service Key*/
+        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("_type","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*데이터 타입(xml, json)*/
+        urlBuilder.append("&" + URLEncoder.encode("gpsLati","UTF-8") + "=" + URLEncoder.encode(gpslati, "UTF-8")); /*WGS84 위도 좌표*/
+        urlBuilder.append("&" + URLEncoder.encode("gpsLong","UTF-8") + "=" + URLEncoder.encode(gpslong, "UTF-8")); /*WGS84 경도 좌표*/
+        HttpURLConnection conn = httpURLConnection(urlBuilder.toString());
+        BufferedReader rd;
+        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        conn.disconnect();
+        //System.out.println(sb.toString());
+
+        JSONObject jObjects = new JSONObject(sb.toString());
+        JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
+
+        Map<String, String> map = new HashMap<>();
+        List<Map<String, String>> nodes = new ArrayList<>();
+
+        // 일치하는 값이 없음(null)
+        if (items.getInt("totalCount") == 0)
+        {
+            return null;
+        }
+        if(items.getInt("totalCount") > 1)
+        {
+            JSONArray item = items.getJSONObject("items").getJSONArray("item");
+            for(int i=0; i< item.length(); i++)
+            {
+                JSONObject obj = item.getJSONObject(i);
+                map.put("nodenm", obj.getString("nodenm"));
+                map.put("nodeid", obj.getString("nodeid"));
+                map.put("gpslati", obj.getString("gpslati"));
+                map.put("gpslong", obj.getString("gpslong"));
+                nodes.add(map);
+            }
+        } else {
+            JSONObject obj = items.getJSONObject("items").getJSONObject("item");
+            map.put("nodenm", obj.getString("nodenm"));
+            map.put("nodeid", obj.getString("nodeid"));
+            map.put("gpslati", obj.getString("gpslati"));
+            map.put("gpslong", obj.getString("gpslong"));
+            nodes.add(map);
+        }
+        return nodes;
+    }
     public HttpURLConnection httpURLConnection(String geturl) throws IOException {
         URL url = new URL(geturl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
