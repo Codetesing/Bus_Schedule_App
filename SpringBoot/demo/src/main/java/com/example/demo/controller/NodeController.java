@@ -52,7 +52,7 @@ public class NodeController {
         }
         rd.close();
         conn.disconnect();
-        // System.out.println(sb.toString());
+        System.out.println(sb.toString());
         JSONObject jObjects = new JSONObject(sb.toString());
         JSONObject items = jObjects.getJSONObject("response").getJSONObject("body");
 
@@ -263,7 +263,7 @@ public class NodeController {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
-        //System.out.println("Response code: " + conn.getResponseCode());
+        System.out.println("Response code: " + conn.getResponseCode());
         return conn;
     }
 }

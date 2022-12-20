@@ -133,7 +133,7 @@ class BusStationActivity : AppCompatActivity() {
         service.getRouteID(22, route)
             .enqueue(object: Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
-                    //Log.d("Success", response.body().toString())
+                    Log.d("Success", response.body().toString())
                     var routeid = response.body().toString()
 
                     if(routeid != "null")
@@ -157,7 +157,7 @@ class BusStationActivity : AppCompatActivity() {
                     response: Response<BusNodeResponse>
                 ) {
                     if (response.isSuccessful) {
-                        //Log.d("TAG", response.body().toString())
+                        Log.d("TAG", response.body().toString())
                         // head를 스킵하기 위해 index 1번을 가져옴
 
                         binding.busName.text = route + "번 버스 노선"
