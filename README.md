@@ -24,3 +24,7 @@ Android Min SDK : 28
 ### DataBase
 
 MySQL : 8.0.26
+
+---------
+
+## 시연영상 : https://www.youtube.com/watch?v=r5xUfr2ci80
